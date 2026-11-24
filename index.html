@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaunchPad — Turn an idea into a build plan</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a30;--panel2:#17213b;--line:#293653;--text:#f4f6ff;--muted:#aab5cf;--accent:#9ef0c2;--accent2:#a9b8ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0%,#24345c 0,transparent 34%),var(--bg);color:var(--text);font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1050px;margin:auto;padding:34px 22px 70px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:58px}.brand{font-weight:800;letter-spacing:.08em}.brand span{color:var(--accent)}.tag{border:1px solid var(--line);border-radius:99px;padding:7px 12px;color:var(--muted);font-size:12px}
+.hero{max-width:760px;margin-bottom:32px}.eyebrow{color:var(--accent);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.hero h1{font-size:clamp(38px,7vw,66px);line-height:1.03;letter-spacing:-.055em;margin:14px 0}.hero p{color:var(--muted);font-size:18px;max-width:650px}
+.layout{display:grid;grid-template-columns: .95fr 1.05fr;gap:18px;align-items:start}.card{background:linear-gradient(180deg,#151f38,#10182b);border:1px solid var(--line);border-radius:22px;padding:23px;box-shadow:0 18px 50px #0003}.card h2{font-size:19px;margin:0 0 5px}.sub{color:var(--muted);font-size:13px;margin:0 0 22px}
+label{display:block;font-size:13px;font-weight:700;margin:16px 0 7px;color:#dce4fa}input,textarea,select{width:100%;border:1px solid #344363;background:#0c1427;color:var(--text);border-radius:12px;padding:13px 14px;font:inherit;outline:none}textarea{min-height:105px;resize:vertical}input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #9ef0c21c}
+button{border:0;border-radius:12px;background:var(--accent);color:#102019;font-weight:850;font-size:14px;padding:14px 17px;cursor:pointer}button:hover{filter:brightness(1.06);transform:translateY(-1px)}button.secondary{background:#263451;color:var(--text);border:1px solid #3a4a6b}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.output{min-height:480px}.empty{display:grid;place-items:center;text-align:center;min-height:420px;color:var(--muted);padding:25px}.spark{font-size:42px;margin-bottom:10px}.result h3{font-size:15px;margin:22px 0 8px;color:var(--accent)}.result p,.result li{color:#d5def2;font-size:14px}.result ul{padding-left:20px}.pill{display:inline-block;border:1px solid #3c5276;border-radius:99px;padding:5px 9px;color:var(--accent2);font-size:11px;margin:5px 5px 0 0}.note{color:var(--muted);font-size:12px;margin-top:20px}.footer{margin-top:28px;color:#8290ad;font-size:12px;text-align:center}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.top{margin-bottom:38px}.output{min-height:300px}}
+</style>
+</head>
+<body><main>
+<div class="top"><div class="brand">LAUNCH<span>PAD</span></div><div class="tag">A student builder tool · v1.0</div></div>
+<section class="hero"><div class="eyebrow">From idea to first version</div><h1>Build something<br><span style="color:var(--accent)">that matters.</span></h1><p>A practical project-planning tool for students. Describe a problem, choose your constraints, and get a focused MVP plan you can actually start building.</p></section>
+<div class="layout">
+<section class="card">
+<h2>01 / Your idea</h2><p class="sub">Start with a problem, not a complicated feature list.</p>
+<label for="idea">What do you want to build?</label><textarea id="idea" placeholder="Example: Help college students find internships, events and hackathons in one place."></textarea>
+<label for="audience">Who is it for?</label><input id="audience" placeholder="e.g. First-year college students">
+<label for="skill">Your current comfort level</label><select id="skill"><option value="beginner">Beginner — keep it simple</option><option value="intermediate">Intermediate — I can work with APIs</option><option value="confident">Confident — ready for a challenge</option></select>
+<label for="days">Time available</label><select id="days"><option value="3">3 days</option><option value="7" selected>1 week</option><option value="14">2 weeks</option><option value="30">1 month</option></select>
+<label for="goal">What should the first version prove?</label><select id="goal"><option value="useful">That people find it useful</option><option value="technical">That the core technology works</option><option value="portfolio">That I can build and explain a complete product</option></select>
+<div class="actions"><button onclick="generate()">Generate my build plan ↗</button><button class="secondary" onclick="resetForm()">Reset</button></div>
+<p class="note">Your inputs stay in this browser. This version uses transparent planning rules; it does not send your idea to an AI service.</p>
+</section>
+<section class="card output"><h2>02 / Your MVP blueprint</h2><p class="sub">A focused first version, not a never-ending roadmap.</p>
+<div id="output" class="empty"><div><div class="spark">✳</div><strong>Your plan will appear here.</strong><p>Enter an idea and select “Generate my build plan”.</p></div></div>
+</section>
+</div>
+<div class="footer">Made for curious student builders · Keep the scope small. Ship. Learn. Improve.</div>
+</main>
+<script>
+function generate(){
+ const idea=document.getElementById('idea').value.trim(), audience=document.getElementById('audience').value.trim()||'your target users';
+ const skill=document.getElementById('skill').value, days=Number(document.getElementById('days').value), goal=document.getElementById('goal').value;
+ if(idea.length<12){alert('Add a little more detail about the problem you want to solve (at least 12 characters).');return;}
+ const stack=skill==='beginner'?['HTML','CSS','JavaScript','GitHub Pages']:skill==='intermediate'?['HTML/CSS/JavaScript','A public API (if needed)','GitHub','GitHub Pages']:['React or vanilla JavaScript','API integration','GitHub','Vercel or GitHub Pages'];
+ const scope=goal==='useful'?'A user can complete one meaningful task and understand the value immediately.':goal==='technical'?'The riskiest technical assumption is tested with a small working proof.':'A polished end-to-end flow, a clear README, screenshots and a short demo.';
+ const milestones=days<=3?[
+ ['Day 1','Define one user journey. Sketch the screen and build the core layout.'],
+ ['Day 2','Implement the main interaction and test it with 2 people.'],
+ ['Day 3','Fix the biggest issue, add a README and capture screenshots.']]:
+ days<=7?[
+ ['Days 1–2','Write the problem statement, define one user journey and sketch the interface.'],
+ ['Days 3–4','Build the core screen and the one feature that delivers the main value.'],
+ ['Days 5–6','Test with 3 people, fix confusing parts and add useful empty/error states.'],
+ ['Day 7','Write the README, capture screenshots and publish the project.']]:
+ days<=14?[
+ ['Days 1–2','Interview 3 potential users and narrow the problem to one use case.'],
+ ['Days 3–5','Design the flow and build the interface.'],
+ ['Days 6–9','Implement the core feature and handle edge cases.'],
+ ['Days 10–12','Test with users, improve usability and fix bugs.'],
+ ['Days 13–14','Document decisions, add screenshots and publish a demo.']]:
+ [
+ ['Week 1','Validate the problem, map the user journey and create a clickable or coded prototype.'],
+ ['Week 2','Build the core feature and connect any required data source.'],
+ ['Week 3','Run user tests, improve accessibility and handle edge cases.'],
+ ['Week 4','Polish, document, publish and plan the next iteration based on feedback.']];
+ const features=['A clear landing or dashboard screen','One primary action that solves the stated problem','A useful result or confirmation state','Basic validation and helpful empty states','A short README explaining the problem, solution and setup'];
+ const safeIdea=escapeHtml(idea), safeAudience=escapeHtml(audience);
+ document.getElementById('output').className='result';
+ document.getElementById('output').innerHTML=`
+ <div><span class="pill">MVP plan</span><span class="pill">${days} day timeline</span><span class="pill">${skill} friendly</span></div>
+ <h3>THE PROBLEM</h3><p>${safeIdea}</p><p><b>Primary user:</b> ${safeAudience}</p>
+ <h3>THE FIRST VERSION SHOULD PROVE</h3><p>${scope}</p>
+ <h3>BUILD THESE FEATURES FIRST</h3><ul>${features.map(x=>'<li>'+x+'</li>').join('')}</ul>
+ <h3>RECOMMENDED STARTER STACK</h3><p>${stack.map(x=>'<span class="pill">'+x+'</span>').join('')}</p>
+ <h3>YOUR BUILD SPRINT</h3><ul>${milestones.map(x=>'<li><b>'+x[0]+':</b> '+x[1]+'</li>').join('')}</ul>
+ <h3>HOW TO KNOW IT WORKS</h3><ul><li>At least 3 target users can complete the main task without your help.</li><li>They can explain what problem the project solves.</li><li>You can demonstrate the main flow in under 60 seconds.</li></ul>
+ <div class="actions"><button onclick="copyPlan()">Copy my plan</button><button class="secondary" onclick="downloadReadme()">Download README.md</button></div>
+ <p class="note">Planning output is generated from simple rules, not an AI model. Treat it as a starting point and adapt it after testing with real users.</p>`;
+ window.currentPlan={idea,audience,skill,days,goal,stack,milestones,scope};
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function planText(){const p=window.currentPlan;if(!p)return '';return `# Project MVP Plan\n\n## Problem\n${p.idea}\n\n## Primary user\n${p.audience}\n\n## MVP goal\n${p.scope}\n\n## Suggested stack\n${p.stack.join(', ')}\n\n## Build sprint\n${p.milestones.map(m=>`- **${m[0]}:** ${m[1]}`).join('\n')}\n\n## Success criteria\n- 3 target users can complete the main task without help.\n- Users can explain the problem it solves.\n- Main flow can be demonstrated in under 60 seconds.\n\n---\nCreated with LaunchPad. Planning output is rule-based, not AI-generated.\n`;}
+function copyPlan(){const t=planText();if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>alert('Plan copied!')).catch(()=>alert('Clipboard unavailable. Use Download README instead.'));else alert('Clipboard unavailable. Use Download README instead.');}
+function downloadReadme(){const blob=new Blob([planText()],{type:'text/markdown'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='README.md';a.click();URL.revokeObjectURL(url);}
+function resetForm(){['idea','audience'].forEach(id=>document.getElementById(id).value='');document.getElementById('skill').value='beginner';document.getElementById('days').value='7';document.getElementById('goal').value='useful';document.getElementById('output').className='empty';document.getElementById('output').innerHTML='<div><div class="spark">✳</div><strong>Your plan will appear here.</strong><p>Enter an idea and select “Generate my build plan”.</p></div>';window.currentPlan=null;}
+</script></body></html>
