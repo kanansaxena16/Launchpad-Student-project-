@@ -20,3 +20,4 @@ The current version uses transparent, rule-based planning logic. It does not cal
 
 ## Built with
 HTML, CSS and vanilla JavaScript.
+HZJUKT
